@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.todocalendar.controller.MainController"
+      spacing="18" style="-fx-background-color: #f7f7f7;">
+    <padding>
+        <Insets top="10" right="30" bottom="30" left="30"/>
+    </padding>
+    
+    <!-- サマリー表示エリア -->
+    <HBox spacing="30" alignment="CENTER_LEFT" style="-fx-padding: 0 0 8 0;">
+        <Label fx:id="monthSummaryLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <Label fx:id="weekSummaryLabel" style="-fx-font-size: 16px; -fx-text-fill: #666;"/>
+    </HBox>
+    
+    <!-- 統計情報表示エリア -->
+    <HBox spacing="20" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2); -fx-padding: 15;">
+        <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+            <Label text="今週の完了率" style="-fx-font-size: 12px; -fx-text-fill: #666;"/>
+            <Label fx:id="weeklyCompletionRate" text="0%" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+            <Label text="高優先度タスク" style="-fx-font-size: 12px; -fx-text-fill: #666;"/>
+            <Label fx:id="highPriorityCount" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f44336;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+            <Label text="今月の目標進捗" style="-fx-font-size: 12px; -fx-text-fill: #666;"/>
+            <Label fx:id="monthlyProgress" text="0%" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2196F3;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS" alignment="CENTER">
+            <Label text="総タスク数" style="-fx-font-size: 12px; -fx-text-fill: #666;"/>
+            <Label fx:id="totalTaskCount" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #9C27B0;"/>
+        </VBox>
+    </HBox>
+    
+    <!-- 月間目標エリア -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2); -fx-padding: 15;">
+        <Label fx:id="monthlyGoalLabel" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+        <TextArea fx:id="monthlyGoalTextArea" 
+                  promptText="今月の目標を入力してください..."
+                  prefRowCount="3"
+                  wrapText="true"
+                  style="-fx-font-size: 14px; -fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+    </VBox>
+    
+    <!-- メインコンテンツエリア（タブ形式） -->
+    <TabPane VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);">
+        
+        <!-- 本日タブ -->
+        <Tab text="本日" closable="false">
+            <HBox spacing="24" style="-fx-padding: 20;">
+                
+                <!-- 左側：本日のタスク一覧 -->
+                <VBox spacing="16" prefWidth="350" minWidth="300" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-padding: 15;">
+                    <Label fx:id="todayLabel" text="本日のタスク" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2196F3;"/>
+                    <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                        <VBox fx:id="todayTodoContainer" spacing="8">
+                            <padding>
+                                <Insets top="8" right="8" bottom="8" left="8"/>
+                            </padding>
+                        </VBox>
+                    </ScrollPane>
+                    <HBox spacing="8">
+                        <TextField fx:id="newTodayTodoField" 
+                                  promptText="本日のタスクを入力..."
+                                  HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                        <ComboBox fx:id="todayPrioritySelector" prefWidth="60" style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                        <Button text="追加" onAction="#addTodayTodo" style="-fx-font-size: 13px; -fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 4;"/>
+                    </HBox>
+                </VBox>
+                
+                <!-- 右側：本日のカレンダー（時間軸） -->
+                <VBox spacing="16" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-padding: 15;">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Label fx:id="todayDateLabel" text="本日のスケジュール" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #4CAF50;"/>
+                        <Button text="予定追加" onAction="#addTodaySchedule" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-background-radius: 4;"/>
+                    </HBox>
+                    <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="true">
+                        <GridPane fx:id="todayScheduleGrid" 
+                                  hgap="2" vgap="2"
+                                  style="-fx-background-color: #f8f9fa; -fx-background-radius: 4;">
+                            <!-- 本日の時間軸スケジュールが動的に生成される -->
+                        </GridPane>
+                    </ScrollPane>
+                </VBox>
+            </HBox>
+        </Tab>
+        
+        <!-- 週間タブ -->
+        <Tab text="週間" closable="false">
+            <VBox spacing="16" style="-fx-padding: 20;">
+                
+                <!-- 週間スケジュール表示 -->
+                <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-padding: 15;">
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Label text="週間予定" style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #FF9800;"/>
+                        <Button text="←前週" onAction="#previousWeek" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-background-radius: 4;"/>
+                        <Button text="今週" onAction="#currentWeek" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-background-radius: 4;"/>
+                        <Button text="次週→" onAction="#nextWeek" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-background-radius: 4;"/>
+                    </HBox>
+                    <ScrollPane prefHeight="200" fitToWidth="true">
+                        <GridPane fx:id="weeklyScheduleGrid" 
+                                  hgap="2" vgap="2"
+                                  style="-fx-background-color: #f8f9fa; -fx-background-radius: 4;">
+                            <!-- 時間軸と曜日ヘッダーが動的に生成される -->
+                        </GridPane>
+                    </ScrollPane>
+                </VBox>
+                
+                <!-- 曜日別タスク表示エリア -->
+                <VBox spacing="16" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-padding: 15;">
+                    <Label text="曜日別タスク一覧" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                    <HBox spacing="10" VBox.vgrow="ALWAYS" prefHeight="200">
+                        <!-- 月曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #e3f2fd; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="月" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #e3f2fd; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="mondayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 火曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #f3e5f5; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="火" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #f3e5f5; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="tuesdayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 水曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #e8f5e8; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="水" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #e8f5e8; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="wednesdayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 木曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #fff3e0; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="木" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #fff3e0; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="thursdayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 金曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #fce4ec; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="金" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #fce4ec; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="fridayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 土曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #e0f2f1; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="土" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #e0f2f1; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="saturdayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                        <!-- 日曜日 -->
+                        <VBox spacing="6" HBox.hgrow="ALWAYS" minWidth="120" style="-fx-background-color: white; -fx-background-radius: 4; -fx-border-color: #f1f8e9; -fx-border-width: 1; -fx-padding: 8;">
+                            <Label text="日" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-background-color: #f1f8e9; -fx-padding: 4; -fx-background-radius: 3;"/>
+                            <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true">
+                                <VBox fx:id="sundayTodoContainer" spacing="2">
+                                    <padding>
+                                        <Insets top="4" right="4" bottom="4" left="4"/>
+                                    </padding>
+                                </VBox>
+                            </ScrollPane>
+                        </VBox>
+                    </HBox>
+                </VBox>
+                
+                <!-- 曜日別ToDo入力エリア -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1); -fx-padding: 15;">
+                    <Label text="曜日別タスク追加" style="-fx-font-weight: bold; -fx-font-size: 15px;"/>
+                    <HBox spacing="10">
+                        <ComboBox fx:id="daySelector" promptText="曜日を選択" prefWidth="120" style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                        <TextField fx:id="dayTodoField" 
+                                  promptText="選択した曜日のタスクを入力..."
+                                  HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                        <ComboBox fx:id="dayPrioritySelector" prefWidth="60" style="-fx-background-color: #fafafa; -fx-border-color: #e0e0e0; -fx-border-radius: 4;"/>
+                        <Button text="追加" onAction="#addDayTodo" style="-fx-font-size: 13px; -fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 4;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+    
+    <!-- 操作ボタンエリア -->
+    <HBox spacing="18" alignment="CENTER_RIGHT">
+        <Button text="保存" onAction="#saveData" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 6;"/>
+        <Button text="Googleカレンダー同期" onAction="#syncGoogleCalendar" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 6;"/>
+        <Button text="Discordに送信" onAction="#sendToDiscord" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 6;"/>
+    </HBox>
+    
+</VBox> 
