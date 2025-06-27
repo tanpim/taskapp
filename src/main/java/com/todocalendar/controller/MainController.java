@@ -78,6 +78,28 @@ public class MainController {
     @FXML
     private GridPane todayScheduleGrid;
 
+    // サイドバー用の新しいフィールド
+    @FXML
+    private Button todayViewButton;
+    @FXML
+    private Button weeklyViewButton;
+    @FXML
+    private Button monthlyGoalViewButton;
+    @FXML
+    private Button statisticsViewButton;
+
+    @FXML
+    private VBox todayView;
+    @FXML
+    private VBox weeklyView;
+    @FXML
+    private VBox monthlyGoalView;
+    @FXML
+    private VBox statisticsView;
+
+    @FXML
+    private Label monthlyGoalLabel;
+
     private List<TodoItem> weeklyTodos = new ArrayList<>();
     private List<TodoItem> todayTodos = new ArrayList<>(); // 本日のタスク
     private Map<String, List<TodoItem>> dayTodos = new HashMap<>();
@@ -115,6 +137,12 @@ public class MainController {
         // 初期表示を更新
         updateAllDayTodoDisplays();
         updateStatistics();
+
+        // 月間目標ラベルの初期化
+        setupMonthlyGoalLabel();
+
+        // 初期ビューを本日に設定
+        showTodayView();
     }
 
     @FXML
@@ -570,6 +598,63 @@ public class MainController {
         // 簡易的なスケジュール追加ダイアログ
         // 実際のプロジェクトでは、より詳細なダイアログを実装する
         System.out.println("本日のスケジュール追加機能（未実装）");
+    }
+
+    // サイドバーのビュー切り替えメソッド
+    @FXML
+    private void showTodayView() {
+        hideAllViews();
+        todayView.setVisible(true);
+        updateButtonStyles(todayViewButton);
+        setupTodayScheduleGrid();
+    }
+
+    @FXML
+    private void showWeeklyView() {
+        hideAllViews();
+        weeklyView.setVisible(true);
+        updateButtonStyles(weeklyViewButton);
+    }
+
+    @FXML
+    private void showMonthlyGoalView() {
+        hideAllViews();
+        monthlyGoalView.setVisible(true);
+        updateButtonStyles(monthlyGoalViewButton);
+    }
+
+    @FXML
+    private void showStatisticsView() {
+        hideAllViews();
+        statisticsView.setVisible(true);
+        updateButtonStyles(statisticsViewButton);
+        updateStatistics(); // 統計を最新に更新
+    }
+
+    private void hideAllViews() {
+        todayView.setVisible(false);
+        weeklyView.setVisible(false);
+        monthlyGoalView.setVisible(false);
+        statisticsView.setVisible(false);
+    }
+
+    private void updateButtonStyles(Button activeButton) {
+        // 全ボタンを非アクティブスタイルに
+        String inactiveStyle = "-fx-background-color: transparent; -fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-background-radius: 6; -fx-padding: 12 16;";
+        todayViewButton.setStyle(inactiveStyle);
+        weeklyViewButton.setStyle(inactiveStyle);
+        monthlyGoalViewButton.setStyle(inactiveStyle);
+        statisticsViewButton.setStyle(inactiveStyle);
+
+        // アクティブボタンのスタイル設定
+        String activeStyle = "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 6; -fx-padding: 12 16;";
+        activeButton.setStyle(activeStyle);
+    }
+
+    private void setupMonthlyGoalLabel() {
+        LocalDate now = LocalDate.now();
+        String monthName = now.format(DateTimeFormatter.ofPattern("M月", Locale.JAPANESE));
+        monthlyGoalLabel.setText(monthName + "の目標");
     }
 
     // 内部クラス：ToDoアイテム
